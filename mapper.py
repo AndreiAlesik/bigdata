@@ -22,6 +22,6 @@ for line in sys.stdin:
         continue
 
     decade = year - (year % 10)
-    
+
     if genre:
-        print("{}\t{}\t{}\t{}\t{}\t1".format(label_id, artist_id, artist_name, decade, genre))
+        print("{}\t{}\t{}\t{}\t{}\t{}".format(label_id, artist_id, artist_name, decade, 1, genre))
