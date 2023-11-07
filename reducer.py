@@ -27,4 +27,5 @@ for key, value in label_artist_decade.items():
     genres = list(value['genres'])
     # Форматируем вывод жанров как строку, разделенную запятыми
     genres_str = ','.join(genres)
-    print("{}\t{}\t{}\t{}\t{}\t{}".format(label_id, artist_id, artist_name, decade, count, genres_str))
+    output = "{}\t{}\t{}\t{}\t{}\t{}\n".format(label_id, artist_id, artist_name, decade, count, genres_str)
+    sys.stdout.write(output)
