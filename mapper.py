@@ -1,27 +1,24 @@
-#!/usr/bin/env python3
-
+#!/usr/bin/env python
 import sys
 
 for line in sys.stdin:
-    values = line.strip().split("\u0001")
-    if len(values) < 12:
-        continue
-
-    label_id = values[6]
-    artist_id = values[4]
-    artist_name = values[5]
-    release_date = values[11]
-    genre = values[8]
-
-    if not artist_id or not release_date:
-        continue
-
-    try:
-        year = int(release_date.split('-')[0])
-    except ValueError:
-        continue
-
-    decade = year - (year % 10)
+    # Удаление лишних пробельных символов
+    line = line.strip()
+    # Разбиваем строку на поля
+    fields = line.split('\u0001')
     
-    if genre:
-        print("{}\t{}\t{}\t{}\t{}\t1".format(label_id, artist_id, artist_name, decade, genre))
+    # Извлекаем необходимые поля
+    label_id = fields[6]
+    artist_id = fields[4]
+    artist_name = fields[5]
+    genre = fields[8]
+    release_date = fields[11]
+    
+    # Вычисляем декаду
+    decade = None
+    if release_date:
+        decade = (int(release_date[:4]) // 10) * 10
+    
+    # Выводим ключ (label_id, artist_id, decade) и значение (genre)
+    if label_id and artist_id and decade:
+        print(f'{label_id}\t{artist_id}\t{artist_name}\t{decade}\t{genre}')
