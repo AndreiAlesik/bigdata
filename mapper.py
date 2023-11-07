@@ -6,27 +6,23 @@ for line in sys.stdin:
     fields = line.split('\u0001')  # Разбиваем строку на поля
     
     # Убедимся, что у нас достаточно полей
-    if len(fields) >= 12:
-        label_id = fields[6]
-        artist_id = fields[4]
-        artist_name = fields[5]
-        genre = fields[8]
-        release_date = fields[11]
+    if len(fields) < 12:
+        continue  # Skip lines that don't have enough fields
 
-        # Используем обработку исключений для преобразования даты
-        try:
-            # Вычисляем декаду
-            if release_date:
-                decade = (int(release_date[:4]) // 10) * 10
-            else:
-                # Если дата не указана, пропускаем эту запись
-                continue
+    label_id = fields[6]
+    artist_id = fields[4]
+    artist_name = fields[5]
+    genre = fields[8]
+    release_date = fields[11]
 
-            # Выводим ключ (label_id, artist_id, decade, genre) и значение 1
-            print("{}\t{}\t{}\t{}\t{}\t1".format(label_id, artist_id, artist_name, decade, genre))
-        except ValueError:
-            # Если возникла ошибка преобразования, просто пропустим эту строку
-            continue
-    else:
-        # Если полей не достаточно, пропустим эту строку
-        continue
+    # Проверяем, что дата релиза имеет ожидаемый формат и вычисляем декаду
+    try:
+        year = int(release_date[:4])
+    except ValueError:
+        continue  # Skip lines with invalid release dates
+
+    decade = (year // 10) * 10
+
+    # Выводим ключ (label_id, artist_id, decade, genre) и значение 1
+    # Используем sys.stdout.write для надежности в Hadoop Streaming
+    sys.stdout.write("{}\t{}\t{}\t{}\t{}\t1\n".format(label_id, artist_id, artist_name, decade, genre))
