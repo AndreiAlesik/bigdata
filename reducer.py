@@ -1,28 +1,29 @@
-#!/usr/bin/env python3
-
+#!/usr/bin/env python
 import sys
+from collections import defaultdict
 
-current_label = None
-current_artist = None
-current_decade = None
-current_genre_set = set()
-count = 0
+# Словарь для подсчета количества пластинок и жанров
+label_artist_decade = defaultdict(lambda: {'count': 0, 'genres': set()})
+
+current_key = None
 
 for line in sys.stdin:
-    label_id, artist_id, artist_name, decade, genre, _ = line.strip().split("\t")
+    # Удаление лишних пробельных символов
+    line = line.strip()
+    # Разбиваем строку на ключ и значение
+    label_id, artist_id, artist_name, decade, genre = line.split('\t')
+    
+    # Создаем ключ для словаря
     key = (label_id, artist_id, artist_name, decade)
     
-    if (current_label, current_artist, current_decade) == key[:3]:
-        current_genre_set.add(genre)
-        count += 1
-    else:
-        if current_label:
-            genres_list = ','.join(current_genre_set)
-            print("{}\t{}\t{}\t{}\t{}".format(current_label, current_artist, current_decade, count, genres_list))
-        current_label, current_artist, current_decade = key[:3]
-        current_genre_set = set([genre])
-        count = 1
+    # Считаем количество пластинок и добавляем жанры в множество
+    label_artist_decade[key]['count'] += 1
+    label_artist_decade[key]['genres'].add(genre)
 
-if current_label:
-    genres_list = ','.join(current_genre_set)
-    print("{}\t{}\t{}\t{}\t{}".format(current_label, current_artist, current_decade, count, genres_list))
+# Выводим результаты
+for key, value in label_artist_decade.items():
+    label_id, artist_id, artist_name, decade = key
+    count = value['count']
+    genres = list(value['genres'])
+    print(f'{label_id}\t{artist_id}\t{artist_name}\t{decade}\t{count}\t{genres}')
+
