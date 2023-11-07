@@ -22,8 +22,8 @@ for line in sys.stdin:
                 # Если дата не указана, пропускаем эту запись
                 continue
 
-            # Выводим ключ (label_id, artist_id, decade) и значение (genre)
-            print(f'{label_id}\t{artist_id}\t{artist_name}\t{decade}\t{genre}')
+            # Выводим ключ (label_id, artist_id, decade, genre) и значение 1
+            print("{}\t{}\t{}\t{}\t{}\t1".format(label_id, artist_id, artist_name, decade, genre))
         except ValueError:
             # Если возникла ошибка преобразования, просто пропустим эту строку
             continue
