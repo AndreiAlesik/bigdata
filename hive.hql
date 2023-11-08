@@ -55,13 +55,23 @@ STORED AS TEXTFILE
 LOCATION '${output_dir6}';
 
 -- Insert data into json_res with the results in JSON format
+-- Assuming the view top_labels and the external table json_res have been created correctly as per the previous steps.
+
+-- Insert data into json_res with the results in JSON format
 INSERT OVERWRITE TABLE json_res
-SELECT CONCAT(
-    '{',
-    '"label_name": "', label_name, '",',
-    '"decade": ', CAST(decade AS STRING), ',',
-    '"artists_count": ', CAST(artists_count AS STRING), ',',
-    '"releases_count": ', CAST(releases_count AS STRING),
-    '}'
-) AS json_output
-FROM top_three_labels;
+SELECT 
+    label_name, 
+    decade, 
+    artists_count, 
+    releases_count
+FROM (
+    SELECT 
+        label_name, 
+        decade, 
+        artists_count, 
+        releases_count,
+        ROW_NUMBER() OVER (PARTITION BY decade ORDER BY releases_count DESC) as rank
+    FROM top_labels
+) t
+WHERE rank <= 3;
+
