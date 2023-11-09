@@ -18,6 +18,16 @@ gsutil cp output.tsv gs://fsbd23/project1/output.tsv
 !sh unzip beers.zip -d /tmp/source 
 
 
+export AIRFLOW_HOME=~/airflow
+pip install apache-airflow
+export PATH=$PATH:~/.local/bin
+airflow db init	
+airflow standalone
+
+mkdir -p ~/airflow/dags/project_files
+mv projekt1.py ~/airflow/dags/
+mv *.* ~/airflow/dags/project_files
+
 
 CREATE TABLE IF NOT EXISTS mapreduce_output (
     label_id STRING,
